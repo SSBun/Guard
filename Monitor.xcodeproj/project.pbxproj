@@ -8,6 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		8E7DA0DC27E5D68D0051D8CF /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA0DB27E5D68D0051D8CF /* main.swift */; };
+		8E7DA10327E7161E0051D8CF /* Guard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10227E7161E0051D8CF /* Guard.swift */; };
+		8E7DA10527E716460051D8CF /* Guarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10427E716460051D8CF /* Guarded.swift */; };
+		8E7DA10727E71FC50051D8CF /* Guard+Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10627E71FC50051D8CF /* Guard+Collection.swift */; };
+		8E7DA10927E722CF0051D8CF /* Guard+Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10827E722CF0051D8CF /* Guard+Sequence.swift */; };
+		8E7DA10B27E725520051D8CF /* Guard+LogicOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10A27E725520051D8CF /* Guard+LogicOperators.swift */; };
+		8E7DA10D27E7262A0051D8CF /* Guard+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10C27E7262A0051D8CF /* Guard+Comparable.swift */; };
+		8E7DA10F27E72BF60051D8CF /* Guard+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA10E27E72BF60051D8CF /* Guard+Operators.swift */; };
+		8E7DA11127E72CBD0051D8CF /* Guard+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA11027E72CBD0051D8CF /* Guard+Equatable.swift */; };
+		8E7DA11327E72E840051D8CF /* Guard+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA11227E72E840051D8CF /* Guard+String.swift */; };
+		8E7DA11527E730E50051D8CF /* Guard+KeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA11427E730E50051D8CF /* Guard+KeyPath.swift */; };
+		8E7DA11827E741060051D8CF /* Optional+Optionalable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA11627E741050051D8CF /* Optional+Optionalable.swift */; };
+		8E7DA11927E741060051D8CF /* Optionalable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DA11727E741060051D8CF /* Optionalable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +37,18 @@
 /* Begin PBXFileReference section */
 		8E7DA0D827E5D68D0051D8CF /* Monitor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Monitor; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E7DA0DB27E5D68D0051D8CF /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		8E7DA10227E7161E0051D8CF /* Guard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guard.swift; sourceTree = "<group>"; };
+		8E7DA10427E716460051D8CF /* Guarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guarded.swift; sourceTree = "<group>"; };
+		8E7DA10627E71FC50051D8CF /* Guard+Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+Collection.swift"; sourceTree = "<group>"; };
+		8E7DA10827E722CF0051D8CF /* Guard+Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+Sequence.swift"; sourceTree = "<group>"; };
+		8E7DA10A27E725520051D8CF /* Guard+LogicOperators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+LogicOperators.swift"; sourceTree = "<group>"; };
+		8E7DA10C27E7262A0051D8CF /* Guard+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+Comparable.swift"; sourceTree = "<group>"; };
+		8E7DA10E27E72BF60051D8CF /* Guard+Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+Operators.swift"; sourceTree = "<group>"; };
+		8E7DA11027E72CBD0051D8CF /* Guard+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+Equatable.swift"; sourceTree = "<group>"; };
+		8E7DA11227E72E840051D8CF /* Guard+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+String.swift"; sourceTree = "<group>"; };
+		8E7DA11427E730E50051D8CF /* Guard+KeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Guard+KeyPath.swift"; sourceTree = "<group>"; };
+		8E7DA11627E741050051D8CF /* Optional+Optionalable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Optionalable.swift"; sourceTree = "<group>"; };
+		8E7DA11727E741060051D8CF /* Optionalable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optionalable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +82,28 @@
 			isa = PBXGroup;
 			children = (
 				8E7DA0DB27E5D68D0051D8CF /* main.swift */,
+				8E7DA10127E714320051D8CF /* ValueGuard */,
 			);
 			path = Monitor;
+			sourceTree = "<group>";
+		};
+		8E7DA10127E714320051D8CF /* ValueGuard */ = {
+			isa = PBXGroup;
+			children = (
+				8E7DA11627E741050051D8CF /* Optional+Optionalable.swift */,
+				8E7DA11727E741060051D8CF /* Optionalable.swift */,
+				8E7DA10227E7161E0051D8CF /* Guard.swift */,
+				8E7DA10427E716460051D8CF /* Guarded.swift */,
+				8E7DA10627E71FC50051D8CF /* Guard+Collection.swift */,
+				8E7DA10827E722CF0051D8CF /* Guard+Sequence.swift */,
+				8E7DA10A27E725520051D8CF /* Guard+LogicOperators.swift */,
+				8E7DA10C27E7262A0051D8CF /* Guard+Comparable.swift */,
+				8E7DA11027E72CBD0051D8CF /* Guard+Equatable.swift */,
+				8E7DA10E27E72BF60051D8CF /* Guard+Operators.swift */,
+				8E7DA11227E72E840051D8CF /* Guard+String.swift */,
+				8E7DA11427E730E50051D8CF /* Guard+KeyPath.swift */,
+			);
+			path = ValueGuard;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -120,7 +164,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E7DA10B27E725520051D8CF /* Guard+LogicOperators.swift in Sources */,
+				8E7DA11927E741060051D8CF /* Optionalable.swift in Sources */,
+				8E7DA10927E722CF0051D8CF /* Guard+Sequence.swift in Sources */,
+				8E7DA10727E71FC50051D8CF /* Guard+Collection.swift in Sources */,
+				8E7DA10527E716460051D8CF /* Guarded.swift in Sources */,
 				8E7DA0DC27E5D68D0051D8CF /* main.swift in Sources */,
+				8E7DA11327E72E840051D8CF /* Guard+String.swift in Sources */,
+				8E7DA10D27E7262A0051D8CF /* Guard+Comparable.swift in Sources */,
+				8E7DA11827E741060051D8CF /* Optional+Optionalable.swift in Sources */,
+				8E7DA10327E7161E0051D8CF /* Guard.swift in Sources */,
+				8E7DA11527E730E50051D8CF /* Guard+KeyPath.swift in Sources */,
+				8E7DA10F27E72BF60051D8CF /* Guard+Operators.swift in Sources */,
+				8E7DA11127E72CBD0051D8CF /* Guard+Equatable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
