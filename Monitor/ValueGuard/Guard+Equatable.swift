@@ -12,7 +12,7 @@ public extension Guard where State: Equatable {
     static func equals(
         _ value: State
     ) -> Self {
-        .init {
+        .init("=\(value)") {
             $0 == value
         }
     }

@@ -11,17 +11,17 @@ public extension Guard {
     
     static func keyPath<T>(
         _ keyPath: KeyPath<State, T>,
-        _ guard: Guard<T>
+        _ guarder: Guard<T>
     ) -> Self {
-        .init {
-            `guard`.check($0[keyPath: keyPath])
+        .init("the vlaue of key `\(NSExpression(forKeyPath: keyPath).keyPath)` matches \(guarder.annotation)") {
+            guarder.check($0[keyPath: keyPath])
         }
     }
     
     static func keyPath(
         _ keyPath: KeyPath<State, Bool>
     ) -> Self {
-        .init {
+        .init("the value of key `\(NSExpression(forKeyPath: keyPath).keyPath)` is true") {
             $0[keyPath: keyPath]
         }
     }

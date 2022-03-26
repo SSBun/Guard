@@ -15,32 +15,23 @@ prefix operator .>=
 prefix operator .==
 
 prefix func .<<T: Comparable>(_ value: T) -> Guard<T> {
-    .init {
-        $0 < value
-    }
+    .less(value)
 }
 
 prefix func .<=<T: Comparable>(_ value: T) -> Guard<T> {
-    .init {
-        $0 <= value
-    }
+    .lessOrEqual(value)
+    
 }
 
 prefix func .><T: Comparable>(_ value: T) -> Guard<T> {
-    .init {
-        $0 > value
-    }
+    .greater(value)
 }
 
 prefix func .>=<T: Comparable>(_ value: T) -> Guard<T> {
-    .init {
-        $0 >= value
-    }
+    .greaterOrEqual(value)
 }
 
 prefix func .==<T: Equatable>(_ value: T) -> Guard<T> {
-    .init {
-        $0 == value
-    }
+    .equals(value)
 }
 

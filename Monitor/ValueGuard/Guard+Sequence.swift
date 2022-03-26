@@ -12,7 +12,7 @@ public extension Guard where State: Sequence, State.Element: Equatable {
     static func contains(
         _ elements: State.Element...
     ) -> Self {
-        .init { value in
+        .init("contains at least one of \(elements)") { value in
             elements.map(value.contains).contains(true)
         }
     }
@@ -20,7 +20,7 @@ public extension Guard where State: Sequence, State.Element: Equatable {
     static func containsAll(
         elements: State.Element...
     ) -> Self {
-        .init {
+        .init("contains all of \(elements)") {
             !elements.map($0.contains).contains(false)
         }
     }
@@ -28,7 +28,7 @@ public extension Guard where State: Sequence, State.Element: Equatable {
     static func startsWith(
         _ elements: State.Element...
     ) -> Self {
-        .init { value in
+        .init("prefix with \(elements)") { value in
             value.starts(with: elements)
         }
     }

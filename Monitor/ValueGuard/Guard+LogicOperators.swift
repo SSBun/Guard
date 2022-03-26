@@ -11,13 +11,12 @@ import Foundation
 public extension Guard {
     
     static prefix func ! (
-        guard: Self
+        guarder: Self
     ) -> Self {
-        .init {
-            !`guard`.check($0)
+        .init("not (\(guarder.annotation))") {
+            !guarder.check($0)
         }
     }
-    
 }
 
 public extension Guard {
@@ -26,7 +25,7 @@ public extension Guard {
         lhs: Self,
         rhs: @autoclosure @escaping () -> Self
     ) -> Self {
-        .init {
+        .init("(\(lhs.annotation)) && (\(rhs().annotation))") {
             lhs.check($0) && rhs().check($0)
         }
     }
@@ -39,7 +38,7 @@ public extension Guard {
         lhs: Self,
         rhs: @autoclosure @escaping () -> Self
     ) -> Self {
-        .init {
+        .init("(\(lhs.annotation)) || (\(rhs().annotation)") {
             lhs.check($0) || rhs().check($0)
         }
     }

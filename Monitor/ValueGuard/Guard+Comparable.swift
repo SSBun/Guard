@@ -12,7 +12,7 @@ public extension Guard where State: Comparable {
     static func less(
         _ state: State
     ) -> Self {
-        .init {
+        .init("<\(state)") {
             $0 < state
         }
     }
@@ -20,7 +20,7 @@ public extension Guard where State: Comparable {
     static func lessOrEqual(
         _ state: State
     ) -> Self {
-        .init {
+        .init("<=\(state)") {
             $0 <= state
         }
     }
@@ -28,7 +28,7 @@ public extension Guard where State: Comparable {
     static func greater(
         _ state: State
     ) -> Self {
-        .init {
+        .init(">\(state)") {
             $0 > state
         }
     }
@@ -36,7 +36,7 @@ public extension Guard where State: Comparable {
     static func greaterOrEqual(
         _ state: State
     ) -> Self {
-        .init {
+        .init(">=\(state)") {
             $0 >= state
         }
     }

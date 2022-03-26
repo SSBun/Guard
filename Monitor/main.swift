@@ -10,8 +10,8 @@ import Foundation
 // MARK: - Reporter
 
 public protocol Reporter {
-    associatedtype ReportableData
-    init(reportedData: ReportableData)
+    associatedtype AcceptableData
+    mutating func update(data: AcceptableData)
 }
 
 // MARK: - KeywordArgumentsCallable
@@ -32,17 +32,26 @@ public struct KeywordArgumentsCallable<Value> {
 // MARK: - Sentry
 
 public struct Sentry<T>: Reporter {
-    public typealias ReportableData = T
-    public let data: T
-    public init(reportedData: T) {
-        data = reportedData
+    public typealias AcceptableData = T
+    
+    public var data: T?
+    
+    public mutating func update(data: T) {
+        self.data = data
     }
 }
 
 public extension Sentry where T == MonitoredParser {
-    var report: KeywordArgumentsCallable<Any> { KeywordArgumentsCallable { report($0) } }
+    var report: KeywordArgumentsCallable<Any> {
+        KeywordArgumentsCallable { [self] in report($0) } }
     func report(_ pairs: KeyValuePairs<String, Any>) {
-        
+        guard let data = data else { return }
+        let message = """
+            Sentry Error Report:
+            \(pairs.map { "\($0.key): \($0.value)" }.joined(separator: "\n"))
+            \(data.errors.values.joined(separator: "\n"))
+            """
+        print(message)
     }
 }
 
@@ -56,110 +65,224 @@ public extension Sentry where T == String {
 // MARK: - Reportable
 
 @propertyWrapper
-public struct Reportable<S: Reporter> {
-    let value: S.ReportableData
-    let reporterType: S.Type
+public struct Reportable<R: Reporter> {
+    var value: R.AcceptableData {
+        didSet {
+            reporter.update(data: value)
+        }
+    }
+    var reporter: R
     
-    public var wrappedValue: S.ReportableData {
-        value
+    public var wrappedValue: R.AcceptableData {
+        get {
+            value
+        }
+        set {
+            value = newValue
+        }
     }
     
     /// If the `ReportedValue` is of value type, the value of this reporter
     /// will never be changed again after reading.
-    public var projectedValue: S {
-        reporterType.init(reportedData: value)
+    public var projectedValue: R {
+        reporter
     }
     
-    public init(wrappedValue: S.ReportableData, _ reporterType: S.Type) {
+    public init(wrappedValue: R.AcceptableData, reporter: R) {
+        self.reporter = reporter
         self.value = wrappedValue
-        self.reporterType = reporterType
+        self.reporter.update(data: wrappedValue)
     }
 }
 
 // MARK: - MonitoredParser
 
-public struct MonitoredParser {
-    let decoder: Decoder
+public class MonitoredParser {
+    let decoder: [String: Any]
     let errors = Storage()
-    init(_ decoder: Decoder) {
+    private var alreadyReported: Bool = false
+    init(_ decoder: [String: Any]) {
         self.decoder = decoder
     }
     
     func parse<T>(
         _ key: String,
-        _ guard: Guard<T> = .reject,
+        _ guarder: Guard<T> = .reject,
         default: T,
         file: String = #file,
         line: Int = #line
     ) -> T {
-//        do {
-//            try
-//        } catch {
-//        }
-        `default`
+        guard let value = decoder[key] else {
+            reportError(
+                file: file,
+                line: line,
+                key: key,
+                guarderAnnotation: guarder.annotation,
+                reason: "Not found",
+                originalValue: "",
+                valueType: T.self)
+                
+            return `default`
+        }
+        
+        guard let parsedValue = value as? T else {
+            reportError(
+                file: file,
+                line: line,
+                key: key,
+                guarderAnnotation: guarder.annotation,
+                reason: "Casting type failure",
+                originalValue: value,
+                valueType: T.self)
+            return `default`
+        }
+        
+        if !guarder.check(parsedValue) {
+            reportError(
+                file: file,
+                line: line,
+                key: key,
+                guarderAnnotation: guarder.annotation,
+                reason: "Validation failure",
+                originalValue: parsedValue,
+                valueType: T.self)
+        }
+        
+        return parsedValue
     }
     
     
     func tryParse<T>(
         _ key: String,
-        _ guard: Guard<T> = .pass
+        _ guarder: Guard<T> = .pass
     ) throws -> T {
         throw NSError(domain: "", code: 402, userInfo: nil)
     }
     
     func parse<T>(
         _ key: String,
-        _ guard: Guard<T>
+        _ guarder: Guard<T>,
+        notNil: Bool = false,
+        file: String = #file,
+        line: Int = #line
     ) -> Optional<T> {
-        .none
+        guard let value = decoder[key] else {
+            if notNil {
+                reportError(
+                    file: file,
+                    line: line,
+                    key: key,
+                    guarderAnnotation: guarder.annotation,
+                    reason: "Not found",
+                    originalValue: "<<nil>>",
+                    valueType: T.self)
+            }
+            return nil
+        }
+        
+        guard let parsedValue = value as? T else {
+            reportError(
+                file: file,
+                line: line,
+                key: key,
+                guarderAnnotation: guarder.annotation,
+                reason: "Type casting failure",
+                originalValue: value,
+                valueType: T.self)
+            return nil
+        }
+        
+        if !guarder.check(parsedValue) {
+            reportError(
+                file: file,
+                line: line,
+                key: key,
+                guarderAnnotation: guarder.annotation,
+                reason: "Validation failure",
+                originalValue: parsedValue,
+                valueType: T.self)
+        }
+        
+        return parsedValue
+    }
+    
+    private func reportError(
+        file: String,
+        line: Int,
+        key: String,
+        guarderAnnotation: String,
+        reason: String,
+        originalValue: Any,
+        valueType: Any
+    ) {
+        let str = """
+            ParsedKey:     \(key)
+            OriginalValue: \(originalValue)
+            CastTo:        \(valueType)
+            Reason:        \(reason)
+            Validation:    \(guarderAnnotation)
+            Address:       \(file)::\(line)
+        
+        """
+        errors.record(str)
+    }
+    
+    func report() {
+        alreadyReported = true
+        var sentry = Sentry<MonitoredParser>()
+        sentry.update(data: self)
+        sentry.report()
+    }
+    
+    deinit {
+        if !alreadyReported {
+            report()
+        }
     }
     
     class Storage {
-        var erros: [Any] = []
+        private(set) var values: [String] = []
+        func record(_ error: String) {
+            values.append(error)
+        }
     }
 }
 
-struct FloowStatus: Codable {
-    let id: String
+struct TestModel {
+    let id: Int
     let isFollowing: Bool
     let weight: Double
     let userEmail: String?
-    init(from decoder: Decoder) throws {
-        @Reportable(Sentry.self)
-        var parser = MonitoredParser(decoder)
+    var score: Int
+    var categories: [String]
+    
+    init(from decoder: [String: Any]) throws {
+        
+        let parser = MonitoredParser(decoder)
         
         isFollowing = parser.parse("is_following", default: false)
-        weight = parser.parse("weight", .greater(10) ,default: 0)
-        userEmail = parser.parse("avatar", .lengthIn(8...20))
-        id = try parser.tryParse("id", .greaterOrEqual("0"))
-        
-//        $parser.report(name: "csl", id: 100, target: "iOS")
-        $parser.report(["name": "ssbun"])
-        
-//        Sentry(reportedData: 0)
-        
-//        @Monitor<Sentry>(translater: .JSON)
-//        var errors: [Error] = []
-//        $parser?.commit()
-//        parser = MonitoredParser(decoder)
-        
-//        isFollowed = parser()
-//        let container = try decoder.container(keyedBy: <#T##CodingKey.Protocol#>)
-        
-        
-        
-//        MonitoredDecoder(decoder) {
-//            Parser(&isFollowing, value: true)
-//        }
-        //        Analysis(decoder, &errors) {
-        //            Parse("is_following", isFollowing, validation: .constant(false), default: false)
-        //        }
-        
-//        isFollowing = try container.decodeIfPresent("is_following") ?? false
-//        isFollowed = try container.decodeIfPresent("is_followed") ?? false
-        
-//        $errors.commit()
+        weight = parser.parse("weight", !(.>0) ,default: 0)
+        id = parser.parse("id", .greater(0), default: 0)
+        score = parser.parse("score", .>=0 && .<=100, default: 0)
+        categories = parser.parse("categories", .countIn(1...), default: [])
+        userEmail = parser.parse("email", .regex("^.*@zhihu.com"), notNil: true)
     }
 }
 
-_ = Guarded<Int, NoneReporter>(wrappedValue: 100, .<=200)
+let remoteData: [String: Any] = [
+    "is_following": 1,
+    "weight": 30.4,
+    "email": "caishilin@yahoo.com",
+    "id": -1,
+    "score": 999,
+    "math_score": "null",
+    "categories": []
+]
+
+do {
+    let _ = try TestModel(from: remoteData)
+} catch(let error) {
+    print("Error:\n \(error)")
+}
+
+

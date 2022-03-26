@@ -7,10 +7,22 @@
 
 import Foundation
 
+
 public struct Guard<State> {
     private let check: (State) -> Bool
+    public let annotation: String
     
-    public init(_ check: @escaping (State) -> Bool) {
+    /// Initializes a gaurder.
+    /// - Parameters:
+    ///   - annotation: The annotatoin of the checking rule. Do not use the characters of `&`,
+    ///   `||`, and `!` in the annotation, they are preserved by logic operators to beautify the final output.
+    ///   - check: A block to save your checking logic.
+    public init(
+        
+        _ annotation: String,
+        _ check: @escaping (State) -> Bool
+    ) {
+        self.annotation = annotation
         self.check = check
     }
     
@@ -20,29 +32,16 @@ public struct Guard<State> {
 }
 
 public extension Guard {
-    /// Always check success.
     static var pass: Self {
-        .init { _ in
+        .init("always checking failure") { _ in
             true
         }
     }
     
-    /// Always check failure.
     static var reject: Self {
-        .init { _ in
+        .init("always checking success") { _ in
             false
         }
     }
 }
-
-public func check<Value>(_ value: Value, _ guard: Guard<Value>) -> Value? {
-    `guard`.check(value) ? value : nil
-}
-
-
-func test() {
-    let value = 100
-    _ = check(value, .>100 && .<=200 || .==999)
-}
-
 

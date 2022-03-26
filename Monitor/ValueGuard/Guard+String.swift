@@ -13,7 +13,7 @@ public extension Guard where State: StringProtocol {
         _ string: S,
         options: NSString.CompareOptions = .init()
     ) -> Self {
-        .init {
+        .init("contains \(string)") {
             $0.range(of: string, options: options) != nil
         }
     }
@@ -21,7 +21,7 @@ public extension Guard where State: StringProtocol {
     static func hasPrefix<S: StringProtocol>(
         _ prefix: S
     ) -> Self {
-        .init {
+        .init("prefix with \(prefix)") {
             $0.hasPrefix(prefix)
         }
     }
@@ -29,7 +29,7 @@ public extension Guard where State: StringProtocol {
     static func hasSuffix<S: StringProtocol>(
         _ suffix: S
     ) -> Self {
-        .init {
+        .init("suffix with \(suffix)") {
             $0.hasSuffix(suffix)
         }
     }
@@ -53,7 +53,7 @@ public extension Guard where State == String {
         _ regularExpression: NSRegularExpression,
         matchingOptions: NSRegularExpression.MatchingOptions = .init()
     ) -> Self {
-        .init {
+        .init("matchs regular \(regularExpression.pattern)") {
             regularExpression.firstMatch(
                 in: $0,
                 options: matchingOptions,
@@ -73,7 +73,7 @@ public extension Guard where State == String {
                 matchingOptions: matchingOptions
             )
         } catch {
-            return .init { _ in
+            return .init("invalid regex \(pattern) so \(onInvalidPatternGuard().annotation)") { _ in
                 onInvalidPatternGuard().check(())
             }
         }

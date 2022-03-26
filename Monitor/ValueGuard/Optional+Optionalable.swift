@@ -1,28 +1,21 @@
 //
-//  Optional+Optionalable.swift
-//  ValidatedPropertyKit
+//  Guard+Optional.swift
+//  Monitor
 //
-//  Created by Sven Tiigi on 05.01.21.
-//  Copyright © 2021 Sven Tiigi. All rights reserved.
+//  Created by SSBun on 2022/3/20.
 //
 
 import Foundation
 
-// MARK: - Optional+Optionalable
-
 extension Optional: Optionalable {
     
-    /// The wrapped value
     public var wrapped: Wrapped? {
-        // Switch on self
+        
         switch self {
         case .some(let wrapped):
-            // Return wrapped value
             return wrapped
         case .none:
-            // Return nil
             return nil
         }
     }
-    
 }

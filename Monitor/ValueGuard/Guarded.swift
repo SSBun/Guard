@@ -7,46 +7,46 @@
 
 import Foundation
 
-public struct NoneReporter<Value>: Reporter {
-    public typealias ReportableData = Value
+//public struct NoneReporter<Value>: Reporter {
+//    public typealias AcceptableData = Value
+//
+//    public init(reportedData: Value) {}
+//}
+//
+//@propertyWrapper
+//public struct Guarded<State, R: Reporter> {
+//    public private(set) var state: State
+//    public let guarder: Guard<State>
+//    private let reporterType: R.Type
+//
+//    public var wrappedValue: State {
+//        get {
+//            state
+//        }
+//        set {
+//            state = newValue
+//        }
+//    }
+//
+//    public init(
+//        wrappedValue: State,
+//        _ guarder: Guard<State>,
+//        _ reporterType: R.Type
+//    ) where R.AcceptableData == State {
+//        self.guarder = guarder
+//        self.state = wrappedValue
+//        self.reporterType = reporterType
+//    }
     
-    public init(reportedData: Value) {}
-}
-
-@propertyWrapper
-public struct Guarded<State, R: Reporter> {
-    public private(set) var state: State
-    public let `guard`: Guard<State>
-    private let reporterType: R.Type
-    
-    public var wrappedValue: State {
-        get {
-            state
-        }
-        set {
-            state = newValue
-        }
-    }
-    
-    public init(
-        wrappedValue: State,
-        _ guard: Guard<State>,
-        _ reporterType: R.Type
-    ) where R.ReportableData == State {
-        self.`guard` = `guard`
-        self.state = wrappedValue
-        self.reporterType = reporterType
-    }
-    
-    public init(
-        wrappedValue: State,
-        _ guard: Guard<State>
-    ) where R.ReportableData == State {
-        self.`guard` = `guard`
-        self.state = wrappedValue
-        self.reporterType = NoneReporter<State>.self as! R.Type
-    }
-}
+//    public init<>(
+//        wrappedValue: State,
+//        _ guard: Guard<State>
+//    ) where R: Never {
+//        self.`guard` = `guard`
+//        self.state = wrappedValue
+//        self.reporterType =
+//    }
+//}
 
 //public extension Guarded where State: Optionalable {
 //    
